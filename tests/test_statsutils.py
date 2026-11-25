@@ -1,4 +1,4 @@
-from boltons.statsutils import Stats, mode
+from boltons.statsutils import Stats, mean, median, mode, variance
 
 
 def test_stats_basic():
@@ -9,6 +9,12 @@ def test_stats_basic():
     assert da.skewness == 0
     assert round(da.kurtosis, 1) == 1.9
     assert da.median == 9.5
+
+
+def test_stat_helpers_accept_iterators():
+    assert mean(x for x in range(5)) == 2.0
+    assert variance(iter(range(5))) == 2.0
+    assert median(iter([]), default=None) is None
 
 
 def test_pearson_type_covers_kappa_ge_zero():

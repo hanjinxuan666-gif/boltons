@@ -129,6 +129,7 @@ system instrumentation package.
 import bisect
 from math import floor, ceil
 from collections import Counter
+from collections.abc import Iterator, Sized
 
 
 class _StatsProperty:
@@ -787,7 +788,9 @@ def describe(data, quantiles=None, format=None):
 
 def _get_conv_func(attr_name):
     def stats_helper(data, default=0.0):
-        return getattr(Stats(data, default=default, use_copy=False),
+        # Statistics may need both the length and multiple passes over the data.
+        use_copy = isinstance(data, Iterator) or not isinstance(data, Sized)
+        return getattr(Stats(data, default=default, use_copy=use_copy),
                        attr_name)
     return stats_helper
 
